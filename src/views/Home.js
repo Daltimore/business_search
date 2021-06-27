@@ -1,5 +1,6 @@
 /* eslint-disable default-case */
 import React, { useState, useEffect } from 'react';
+// import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
 import businessList from '../businessList';
 
 const Home = () => {
@@ -8,6 +9,7 @@ const Home = () => {
   const [searchResults, updateSearchResults] = useState(businessList);
   const [displayResults, updateDisplayResults] = useState(false);
   const [focusIndex, updateFocusIndex] = useState(-1);
+  const [showMap, setShowMap] = useState(false);
   const keys = {
       ENTER: 13,
       UP: 38,
@@ -24,6 +26,11 @@ const Home = () => {
    
   getSearchResults();
 }, []);
+
+  const mapStyles = {
+    width: '100%',
+    height: '100%',
+  };
 
 const updateSearch = e => {
   updateSearchTerm(e.target.value);
@@ -43,6 +50,7 @@ const hideAutoSuggest = e => {
 
 const showGoogleMap = () => {
   console.log('you will show me google maps');
+  setShowMap(true)
 }
 
 const showAutoSuggest = () => {
@@ -112,6 +120,7 @@ const showAutoSuggest = () => {
             className="px-5 py-3 w-full border border-gray-400 rounded-xl focus:outline-none"
             type="text"
             placeholder="Type to search..."
+            v
             onKeyUp={updateSearch}
             onKeyDown={handleNavigation}
             onBlur={hideAutoSuggest}

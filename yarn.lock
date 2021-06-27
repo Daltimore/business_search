@@ -2310,6 +2310,11 @@
     "@typescript-eslint/types" "4.28.0"
     eslint-visitor-keys "^2.0.0"
 
+"@ubilabs/google-maps-react-hooks@^1.4.7":
+  version "1.4.7"
+  resolved "https://registry.yarnpkg.com/@ubilabs/google-maps-react-hooks/-/google-maps-react-hooks-1.4.7.tgz#dffb8ab65d24569b7e86339ec307bd72b3fb5ed3"
+  integrity sha512-uuQfs5FjGxJ8C4jXKa1IeoYuT2247QtI+e0wjw+3PLagSeSsGCZXHUYjg3hfMRbFJIuksQVi45trB7l2g4Wjvg==
+
 "@webassemblyjs/ast@1.9.0":
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.9.0.tgz#bd850604b4042459a5a41cd7d338cbed695ed964"
