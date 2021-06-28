@@ -1,6 +1,6 @@
 /* eslint-disable array-callback-return */
 import React from 'react';
-import {Loader, LoaderOptions} from 'google-maps';
+// import {Loader, LoaderOptions} from 'google-maps';
 class Home extends React.Component {
   state = {
     input: "",
