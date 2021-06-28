@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^12.1.10",
     "@ubilabs/google-maps-react-hooks": "^1.4.7",
     "autoprefixer": "^9",
+    "google-maps": "^4.3.3",
     "google-maps-react": "^2.0.6",
     "postcss": "^7",
     "react": "^17.0.2",

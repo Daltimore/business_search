@@ -1,146 +1,184 @@
-/* eslint-disable default-case */
-import React, { useState, useEffect } from 'react';
-// import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
-import businessList from '../businessList';
-
-const Home = () => {
-  const [searchTerm, updateSearchTerm] = useState('');
-  const [filteredResults, updateFilteredResults] = useState([]);
-  const [searchResults, updateSearchResults] = useState(businessList);
-  const [displayResults, updateDisplayResults] = useState(false);
-  const [focusIndex, updateFocusIndex] = useState(-1);
-  const [showMap, setShowMap] = useState(false);
-  const keys = {
-      ENTER: 13,
-      UP: 38,
-      DOWN: 40
+/* eslint-disable array-callback-return */
+import React from 'react';
+import {Loader, LoaderOptions} from 'google-maps';
+class Home extends React.Component {
+  state = {
+    input: "",
+    fData: [
+      {
+        business_name: "Araknet",
+        type: "Technology",
+        geo_location: "jaynewashington@exposa.com",
+        description: "female"
+      },
+      {
+        business_name: "Google",
+        type: "Technology",
+        geo_location: "petersondalton@exposa.com",
+        description: "male"
+      },
+      {
+        business_name: "Paystack",
+        type: "Fintech",
+        geo_location: "velazquezcalderon@exposa.com",
+        description: "male"
+      },
+      {
+        business_name: "Stripe",
+        type: "Fintech",
+        geo_location: "normanreed@exposa.com",
+        description: "male"
+      }
+    ],
+    data: [
+      {
+        business_name: "Araknet",
+        type: "Technology",
+        geo_location: "jaynewashington@exposa.com",
+        description: "female"
+      },
+      {
+        business_name: "Google",
+        type: "Technology",
+        geo_location: "petersondalton@exposa.com",
+        description: "male"
+      },
+      {
+        business_name: "Paystack",
+        type: "Fintech",
+        geo_location: "velazquezcalderon@exposa.com",
+        description: "male"
+      },
+      {
+        business_name: "Stripe",
+        type: "Fintech",
+        geo_location: "normanreed@exposa.com",
+        description: "male"
+      }
+    ]
   };
 
-  useEffect(() => {
-    const getSearchResults = () => {
-    // ⚠️ This is where you should pull data in from your server
-    const searchResultsResponse = businessList;
 
-    updateSearchResults(searchResultsResponse);
-  };
-   
-  getSearchResults();
-}, []);
-
-  const mapStyles = {
-    width: '100%',
-    height: '100%',
+  handleChange = event => {
+    this.setState({
+      input: event.target.value
+    }, this.filterHandler);
   };
 
-const updateSearch = e => {
-  updateSearchTerm(e.target.value);
-  updateFilteredResults(searchResults.filter(result => result.name.match(new RegExp(e.target.value, 'gi'))))
-};
+  handleClick = async() => {
+    // console.log('Click happened');
+    // const options = {}
+    // const loader = new Loader('AIzaSyBLTL8haBZZ-GYvhuK5jcZDOibk_o9Bu74', options);
+    // const google = await loader.load();
 
-const hideAutoSuggest = e => {
-  e.persist();
+    // const map = new google.maps.Map(document.getElementById('map'), {
+    //   center: {lat: -34.397, lng: 150.644},
+    //   zoom: 8,
+    // });
+    // return map
+    const address = '1600 Amphitheatre Parkway, Mountain View, CA 94043, USA'
+    const response = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyBLTL8haBZZ-GYvhuK5jcZDOibk_o9Bu74`
 
-  if (e.relatedTarget && e.relatedTarget.className === 'autosuggest-link') {
-    return;
+    fetch(response)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+    console.log(response);
   }
 
-  updateDisplayResults(true);
-  updateFocusIndex(-1);
-};
 
-const showGoogleMap = () => {
-  console.log('you will show me google maps');
-  setShowMap(true)
-}
+  highlighter = (obj, lowercasedInput) => {
+    let rawObj = obj.replace(`<span className='highlight'>`, '').replace(`</span>`, '');
 
-const showAutoSuggest = () => {
-  updateDisplayResults(false);
-}
+    if (rawObj.indexOf(lowercasedInput) !== -1) {
+      const startIndex = rawObj.indexOf(lowercasedInput);
+      const endIndex = startIndex - 1 + lowercasedInput.length;
 
-  const handleNavigation = e => {
-    switch (e.keyCode) {
-      case keys.ENTER:
-        hideAutoSuggest(e);
-      break;
-      case keys.UP:
-        if (focusIndex > -1) {
-          updateFocusIndex(focusIndex - 1);
+      if (startIndex !== 0) {
+        return rawObj.slice(0, startIndex) + `<span className='highlight'>${lowercasedInput}</span>` + rawObj.slice(endIndex + 1, rawObj.length);
+      } else {
+        return rawObj.slice(0, startIndex) + `<span className='highlight'>${lowercasedInput}</span>` + rawObj.slice(endIndex + 1, rawObj.length);
+      }
+    } else {
+      return rawObj
+    }
+  }
+
+
+  filterHandler = () => {
+    const {
+      input,
+      data
+    } = this.state;
+    const lowercasedInput = input.toLowerCase();
+
+    const filteredData = data.filter(item => {
+      return Object.keys(item).some(key =>
+        item[key].toLowerCase().includes(lowercasedInput)
+      );
+    });
+
+    let highlightFD = [];
+    filteredData.map((values, index) => {
+      highlightFD.push({ ...values
+      });
+    })
+
+
+    if (lowercasedInput.trim().length > 0) {
+      highlightFD.map((val, index) => {
+        for (let key in val) {
+          highlightFD[index][key] = this.highlighter(val[key].toLowerCase(), lowercasedInput);
         }
-      break;
-      case keys.DOWN:
-        if (focusIndex < filteredResults.length - 1) {
-          updateFocusIndex(focusIndex + 1);
-        }
-      break;
-    }
-  };
-
-  const SearchResults = () => {
-    const Message = ({ text }) => (
-      <div className="py-2">
-        <h2>{text}</h2>
-        <hr />
-      </div>
-    );
-
-    if (!displayResults) {
-        return null;
+      });
     }
 
-    if (!searchResults.length) {
-        return <Message text="Loading search results" />
-    }
+    this.setState({
+      fData: highlightFD
+    });
 
-    if (!searchTerm) {
-        return <Message text="Try to search for something..." />
-    }
+  }
 
-    if (!filteredResults.length) {
-        return <Message text="We couldn't find anything for your search term." />
-    }
+  render() {
+    const {
+      input,
+      fData
+    } = this.state;
 
-    return (
-      <ul className="search-results">
-        {filteredResults.map((article, index) => (
-          <li key={index}>
-            {/* ⚠️ You may want to outsource this part to make the component less heavy */}
-            <div className="cursor-pointer" onClick={showGoogleMap}>{article.name}</div>
-          </li>
-        ))}
-      </ul>
-    );
-}
 
-  return (
-    <div className="min-h-screen h-full flex justify-center items-center">
-      <section className="w-6/12">
+    return ( 
+      <div className="min-h-screen h-full flex justify-center items-center">
+        <div className="w-6/12">
         <h3 className="font-semibold text-3xl pb-6">Business Search</h3>
         <div className="border border-gray-300 rounded-md p-8 mb-10">
-          <input
-            className="px-5 py-3 w-full border border-gray-400 rounded-xl focus:outline-none"
+        <
+          input
+            value = { input }
+            onChange = { this.handleChange }
+            className="px-5 py-3 w-full border border-gray-400 rounded-xl mb-8 focus:outline-none"
             type="text"
             placeholder="Type to search..."
-            v
-            onKeyUp={updateSearch}
-            onKeyDown={handleNavigation}
-            onBlur={hideAutoSuggest}
-            onFocus={showAutoSuggest}
-          />
-          <div className="text-left my-6">
-          <ul className="search-suggestions">
-            {(!displayResults && searchTerm) && <li key="-1" className={focusIndex === -1 ? 'active pb-2' : null}>{`Search for ${searchTerm}`}</li>}
-              {!displayResults && filteredResults.map((business, index) => (
-                <div key={index}>
-                  {business.name}
-                </div>
-              ))}
-          </ul>
-            <SearchResults />
-          </div>
+          /> {
+        fData.map((item, index) => ( <div key ={index} className ="flex mt-2">
+         <div
+          className="cursor-pointer"
+          onClick={() => this.handleClick()}
+        >
+          {item.business_name}
         </div>
-      </section>
-    </div>
-  )
+        </div>
+        ))}
+        </div>
+        <div id="map"></div>
+      </div>
+      </div>
+  );
+}
 }
 
 export default Home;
