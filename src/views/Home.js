@@ -93,16 +93,16 @@ class Home extends React.Component {
 
 
   highlighter = (obj, lowercasedInput) => {
-    let rawObj = obj.replace(`<span className='highlight'>`, '').replace(`</span>`, '');
+    let rawObj = obj.replace(`<span>`, '').replace(`</span>`, '');
 
     if (rawObj.indexOf(lowercasedInput) !== -1) {
       const startIndex = rawObj.indexOf(lowercasedInput);
       const endIndex = startIndex - 1 + lowercasedInput.length;
 
       if (startIndex !== 0) {
-        return rawObj.slice(0, startIndex) + `<span className='highlight'>${lowercasedInput}</span>` + rawObj.slice(endIndex + 1, rawObj.length);
+        return rawObj.slice(0, startIndex) + rawObj.slice(endIndex + 1, rawObj.length);
       } else {
-        return rawObj.slice(0, startIndex) + `<span className='highlight'>${lowercasedInput}</span>` + rawObj.slice(endIndex + 1, rawObj.length);
+        return rawObj.slice(0, startIndex) + rawObj.slice(endIndex + 1, rawObj.length);
       }
     } else {
       return rawObj
